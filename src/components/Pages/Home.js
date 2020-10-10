@@ -30,16 +30,18 @@ class Home extends Component{
     }
 
     // del Todo Previous
-    delTodo = (id) => {
+    delTodo = (id, obj) => {
+        obj.changeButtonState();
         this.setState({
-        todos: this.state.todos.filter(todo => {
-            return todo.id !== id;
-        })
+            todos: this.state.todos.filter(todo => {
+                return todo.id !== id;
+            })
         });
     }
 
     // del Todo New
-    delTodoNew = (id) => {
+    delTodoNew = (id, obj) => {
+        obj.changeButtonState();
         axios.delete(
             `https://jsonplaceholder.typicode.com/todos/${id}`
         ).then(
@@ -50,22 +52,29 @@ class Home extends Component{
                     })
                 });
             }
+        ).catch(
+            e => {
+                console.log(e);
+            }
         )
     }
 
     // add Todo Previous
-    addTodo = (title) => {
+    addTodo = (title, obj) => {
+        obj.changeButtonState();
         this.setState({
-        todos: this.state.todos.concat({
-            id: uuid(),
-            title,
-            completed: false
-        })
+            todos: this.state.todos.concat({
+                id: uuid(),
+                title,
+                completed: false
+            })
         });
+        obj.changeButtonState();
     }
 
     // add Todo New 
-    addTodoNew = (title) => {
+    addTodoNew = (title, obj) => {
+        obj.changeButtonState();
         axios.post(
             'https://jsonplaceholder.typicode.com/todos',
             {
@@ -76,19 +85,24 @@ class Home extends Component{
             res => {
                 this.setState({
                     todos: this.state.todos.concat({
-                        id: res.data.id,
+                        id: uuid(),
                         title: res.data.title,
                         completed: res.data.completed
                     })
                 });
+                obj.changeButtonState();
             }
-        )   
+        ).catch(
+            e => {
+                obj.changeButtonState();
+            }
+        )
     }
 
     render(){
         return (
             <React.Fragment>
-                <div style={{background: 'white', color: 'black', padding: '5px', margin: '10px 0px'}}>
+                <div className="heading">
                     <h1>Home</h1>
                 </div>
                 <Todos todos={this.state.todos} markCompleteOrNot={this.markCompleteOrNot} delTodo={this.delTodoNew} addTodo={this.addTodoNew} />
