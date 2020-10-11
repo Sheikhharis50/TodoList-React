@@ -1,10 +1,10 @@
 // Live
-// export const API = "todolist-api-harry.herokuapp.com/";
-// export const PROTOCOL = "https";
+export const API = "todolist-api-harry.herokuapp.com/";
+export const PROTOCOL = "https";
 
 // Local
-export const API = "localhost:8000/";
-export const PROTOCOL = "http";
+// export const API = "localhost:8000/";
+// export const PROTOCOL = "http";
 
 // Both
 export const URL_CONNECTOR = "://"; 
