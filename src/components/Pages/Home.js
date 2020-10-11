@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Todos from '../Todo/Todos';
 import {v4 as uuid} from "uuid"; 
 import axios from 'axios';
+import {BASEURL} from '../../Constants';
 
 class Home extends Component{
     state = {
@@ -10,9 +11,9 @@ class Home extends Component{
 
     // Method called when Components Mount
     componentDidMount = () => {
-        axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5').then(
+        axios.get(`${BASEURL}todo`).then(
             res => {
-                this.setState({ todos: res.data })
+                this.setState({ todos: res.data.data })
             }
         ).catch(
             e => console.log(e)
@@ -22,10 +23,19 @@ class Home extends Component{
     // Toggle Complete
     markCompleteOrNot = (id) => {
         this.setState({
-        todos: this.state.todos.map(todo => {
-            todo.completed = todo.id === id ? !todo.completed : todo.completed
-            return todo;
-        })
+            todos: this.state.todos.map(todo => {
+                if(todo.id === id ){
+                    todo.completed = !todo.completed;
+                    axios.put(
+                        `${BASEURL}todo/${id}/`,
+                        {
+                            title: todo.title,
+                            completed: todo.completed
+                        }
+                    )
+                }
+                return todo;
+            })
         });
     }
 
@@ -43,7 +53,7 @@ class Home extends Component{
     delTodoNew = (id, obj) => {
         obj.changeButtonState();
         axios.delete(
-            `https://jsonplaceholder.typicode.com/todos/${id}`
+            `${BASEURL}todo/${id}/`
         ).then(
             res => {
                 this.setState({
@@ -76,18 +86,17 @@ class Home extends Component{
     addTodoNew = (title, obj) => {
         obj.changeButtonState();
         axios.post(
-            'https://jsonplaceholder.typicode.com/todos',
+            `${BASEURL}todo`,
             {
                 title,
-                completed: false
             }
         ).then(
             res => {
                 this.setState({
                     todos: this.state.todos.concat({
-                        id: uuid(),
-                        title: res.data.title,
-                        completed: res.data.completed
+                        id: res.data.data.id,
+                        title: res.data.data.title,
+                        completed: res.data.data.completed
                     })
                 });
                 obj.changeButtonState();

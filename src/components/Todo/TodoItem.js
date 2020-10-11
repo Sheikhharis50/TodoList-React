@@ -29,13 +29,13 @@ export class TodoItem extends Component {
     }
 
     render() {
-        const { id,title } = this.props.todo;
+        const { id,title,completed } = this.props.todo;
         const btn_state = this.state.loading;
         return (
             <div style={this.getStyle()}>
                 <p className="d-flex justify-content-between align-items-center m-0">
                     <span>
-                        <input type="checkbox" onChange={this.props.markCompleteOrNot.bind(this, id)}/>
+                        <input type="checkbox" checked={completed} onChange={this.props.markCompleteOrNot.bind(this, id)}/>
                         <span style={this.getSelectedStyle()}>{title}</span>
                     </span>
                     <button onClick={this.props.delTodo.bind(this, id, this)} className="btn btn-danger rounded-circle del-btn">
