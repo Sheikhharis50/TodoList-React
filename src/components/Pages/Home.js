@@ -5,15 +5,42 @@ import axios from 'axios';
 import {BASEURL} from '../../Constants';
 
 class Home extends Component{
+    intervalID;
+
     state = {
         todos: []
     }
 
     // Method called when Components Mount
     componentDidMount = () => {
+        this.getData();
+        this.ping();
+    }
+
+    // Method called when Components UnMount
+    componentWillUnmount() {
+        clearTimeout(this.intervalID);
+    }
+
+    // Method to ping to Server
+    ping = () => {
+        axios.get(`${BASEURL}ping`).then(
+            res => {
+                if (res.data.state){
+                    this.getData();
+                }
+                this.intervalID = setTimeout(this.ping.bind(this), 3000);
+            }
+        ).catch(
+            e => console.log(e)
+        )
+    }
+
+    // Method to getData from Server
+    getData = () => {
         axios.get(`${BASEURL}todo`).then(
             res => {
-                this.setState({ todos: res.data.data })
+                this.setState({ todos: res.data.data });
             }
         ).catch(
             e => console.log(e)
